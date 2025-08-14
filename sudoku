@@ -1,0 +1,101 @@
+import java.util.Scanner;
+
+public class SudokuSimples {
+    static int[][] tabuleiro = {
+        {5, 3, 0, 0, 7, 0, 0, 0, 0},
+        {6, 0, 0, 1, 9, 5, 0, 0, 0},
+        {0, 9, 8, 0, 0, 0, 0, 6, 0},
+
+        {8, 0, 0, 0, 6, 0, 0, 0, 3},
+        {4, 0, 0, 8, 0, 3, 0, 0, 1},
+        {7, 0, 0, 0, 2, 0, 0, 0, 6},
+
+        {0, 6, 0, 0, 0, 0, 2, 8, 0},
+        {0, 0, 0, 4, 1, 9, 0, 0, 5},
+        {0, 0, 0, 0, 8, 0, 0, 7, 9}
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            printTabuleiro();
+            System.out.println("Digite a linha (1-9), coluna (1-9) e número (1-9) separados por espaço (0 0 0 para sair):");
+            int linha = scanner.nextInt() - 1;
+            int coluna = scanner.nextInt() - 1;
+            int num = scanner.nextInt();
+
+            if (linha == -1 && coluna == -1 && num == 0) {
+                System.out.println("Jogo finalizado.");
+                break;
+            }
+
+            if (linha < 0 || linha > 8 || coluna < 0 || coluna > 8 || num < 1 || num > 9) {
+                System.out.println("Entrada inválida, tente novamente.");
+                continue;
+            }
+
+            if (tabuleiro[linha][coluna] != 0) {
+                System.out.println("Posição já preenchida. Tente outra.");
+                continue;
+            }
+
+            if (checarValido(linha, coluna, num)) {
+                tabuleiro[linha][coluna] = num;
+            } else {
+                System.out.println("Número inválido para essa posição. Tente novamente.");
+            }
+
+            if (tabuleiroCompleto()) {
+                System.out.println("Parabéns! Você completou o Sudoku.");
+                printTabuleiro();
+                break;
+            }
+        }
+        scanner.close();
+    }
+
+    static void printTabuleiro() {
+        System.out.println("Tabuleiro Sudoku:");
+        for (int i = 0; i < 9; i++) {
+            if (i % 3 == 0) System.out.println("+-------+-------+-------+");
+            for (int j = 0; j < 9; j++) {
+                if (j % 3 == 0) System.out.print("| ");
+                System.out.print((tabuleiro[i][j] == 0 ? "." : tabuleiro[i][j]) + " ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("+-------+-------+-------+");
+    }
+
+    static boolean checarValido(int linha, int coluna, int num) {
+        // Checa linha
+        for (int j = 0; j < 9; j++) {
+            if (tabuleiro[linha][j] == num) return false;
+        }
+
+        // Checa coluna
+        for (int i = 0; i < 9; i++) {
+            if (tabuleiro[i][coluna] == num) return false;
+        }
+
+        // Checa subgrade 3x3
+        int boxLinha = (linha / 3) * 3;
+        int boxColuna = (coluna / 3) * 3;
+
+        for (int i = boxLinha; i < boxLinha + 3; i++) {
+            for (int j = boxColuna; j < boxColuna + 3; j++) {
+                if (tabuleiro[i][j] == num) return false;
+            }
+        }
+        return true;
+    }
+
+    static boolean tabuleiroCompleto() {
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if (tabuleiro[i][j] == 0)
+                    return false;
+        return true;
+    }
+}
